@@ -20,7 +20,6 @@ export const bookTour = async (tourId) => {
       sessionId: res.data.session.id,
     });
   } catch (err) {
-    console.error('Stripe Checkout error:', err);
     alert('Something went wrong with booking the tour!');
   }
 };
