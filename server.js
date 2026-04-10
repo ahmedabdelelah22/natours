@@ -10,10 +10,10 @@ process.on('uncaughtException',err => {
 dotenv.config({ path: './config.env' });
 
 const app = require('./app');
-//const DB = process.env.DATABASE.replace('<db_password>',process.env.DATABASE_PASSWORD)
+const DB = process.env.DATABASE.replace('<db_password>',process.env.DATABASE_PASSWORD)
 
 // Use local MongoDB instead of Atlas
-const DB = process.env.DATABASE_LOCAL; // mongodb://localhost:27017/natours
+//const DB = process.env.DATABASE_LOCAL; // mongodb://localhost:27017/natours
 
 mongoose.connect(DB)
   .then((con) => {
