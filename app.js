@@ -71,7 +71,12 @@ app.use(
 );
 
 // Enable CORS (configure origin in production)
-app.use(cors());
+app.use(cors(
+  {
+    origin: "http://localhost:3000", // your frontend
+    credentials: true,
+  }
+));
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {
