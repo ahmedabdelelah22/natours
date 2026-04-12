@@ -3,10 +3,10 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const cors = require('cors');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
-const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const bookingController = require('./controllers/bookingController');
@@ -71,12 +71,16 @@ app.use(
 );
 
 // Enable CORS (configure origin in production)
-app.use(cors(
-  {
-    origin: "http://localhost:3000", // your frontend
-    credentials: true,
-  }
-));
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true,
+  methods: ["GET", "POST", "PATCH", "DELETE", "PUT"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+});
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {

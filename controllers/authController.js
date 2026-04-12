@@ -27,12 +27,14 @@ const createSendToken = (user, statusCode, res) => {
   const isProduction = process.env.NODE_ENV === 'production';
 
   res.cookie('jwt', token, {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-    ),
     httpOnly: true,
-    secure: isProduction,           // HTTPS only in production
-    sameSite: isProduction ? 'none' : 'lax', // cross-origin in prod, lax in dev
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+
+    // ✅ IMPORTANT FIX
+    maxAge: Number(process.env.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000,
+
+    path: '/',
   });
 
   res.status(statusCode).json({
