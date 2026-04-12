@@ -3,9 +3,11 @@ import { showAlert } from './alerts';
 export const logout = async () => {
   try {
     const res = await axios({
-      method: 'POST',
-      url: '/api/v1/users/logout'
-    });
+      method: 'GET',
+      url: '/api/v1/users/logout',
+      withCredentials: true // ✅ REQUIRED for cookies
+    }
+    );
 
     if (res.data.status === 'success') {
       showAlert('success', 'Logged out successfully!');

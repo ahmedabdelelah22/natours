@@ -21,29 +21,27 @@ const signToken = id => {
   });
 }
 
-const createSendToken = (user, statusCode , res )=> {
+const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
-  //✅ 2️⃣ Send JWT in Cookie
+
+  const isProduction = process.env.NODE_ENV === 'production';
+
   res.cookie('jwt', token, {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
-// 1️⃣ httpOnly: true
-// Purpose: Prevents JavaScript in the browser from accessing the cookie.
     httpOnly: true,
-// 2️⃣ secure: process.env.NODE_ENV === 'production'
-// Purpose: Ensures the cookie is only sent over HTTPS connections.
-    secure: process.env.NODE_ENV === 'production',
-     sameSite: "none",
+    secure: isProduction,           // HTTPS only in production
+    sameSite: isProduction ? 'none' : 'lax', // cross-origin in prod, lax in dev
   });
+
   res.status(statusCode).json({
     status: 'success',
     token,
-    data: {
-      user
-    },
-  })
-}
+    data: { user },
+  });
+};
+
 
 exports.signup = catchAsync(async (req, res, next) => {
   const { name, email, password, passwordConfirm, passwordChangedAt } =
@@ -93,12 +91,13 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.logout =catchAsync(async (req, res, next) => {
+  const isProduction = process.env.NODE_ENV === 'production';
   try {
     res.cookie('jwt', '', {
       httpOnly: true,
       expires: new Date(Date.now()),
-      sameSite: "none",
-       secure: process.env.NODE_ENV === 'production',
+      sameSite: isProduction ? 'none' : 'lax', // ← must match login cookie,
+       secure: isProduction,
     });
 
     // send response once
@@ -107,6 +106,18 @@ exports.logout =catchAsync(async (req, res, next) => {
     next(err); // only send response here if try fails
   }
 });
+// exports.logout = catchAsync(async (req, res, next) => {
+
+//   res.cookie('jwt', '', {
+//     httpOnly: true,
+//     expires: new Date(Date.now()),
+//     secure: isProduction,
+//     sameSite: isProduction ? 'none' : 'lax', // ← must match login cookie
+//   });
+
+//   return res.status(200).json({ status: 'success' });
+// });
+
 
 
 exports.protect = catchAsync(async (req, res, next) => {
