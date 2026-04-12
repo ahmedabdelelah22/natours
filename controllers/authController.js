@@ -98,7 +98,7 @@ exports.logout =catchAsync(async (req, res, next) => {
       httpOnly: true,
       expires: new Date(Date.now()),
       sameSite: "none",
-  secure: true,
+       secure: process.env.NODE_ENV === 'production',
     });
 
     // send response once
