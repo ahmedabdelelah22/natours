@@ -33,7 +33,8 @@ const createSendToken = (user, statusCode , res )=> {
     httpOnly: true,
 // 2️⃣ secure: process.env.NODE_ENV === 'production'
 // Purpose: Ensures the cookie is only sent over HTTPS connections.
-    secure: process.env.NODE_ENV === 'production'
+    secure: process.env.NODE_ENV === 'production',
+     sameSite: "none",
   });
   res.status(statusCode).json({
     status: 'success',
@@ -96,6 +97,8 @@ exports.logout =catchAsync(async (req, res, next) => {
     res.cookie('jwt', '', {
       httpOnly: true,
       expires: new Date(Date.now()),
+      sameSite: "none",
+  secure: true,
     });
 
     // send response once
