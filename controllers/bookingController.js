@@ -72,20 +72,26 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
 /* =========================================
    CREATE BOOKING FROM STRIPE WEBHOOK
 ========================================= */
-
 const createBooking = async (session) => {
   try {
-    console.log('💾 Creating booking...');
+    console.log('SESSION:', session);
+
+    const tour = session.client_reference_id;
+    const user = session.metadata?.userId;
+
+    if (!tour || !user) {
+      throw new Error('Missing tour or user in session');
+    }
 
     await Booking.create({
-      tour: session.client_reference_id,
-      user: session.metadata.userId,
+      tour,
+      user,
       price: session.amount_total / 100,
     });
 
     console.log('✅ Booking saved');
   } catch (err) {
-    console.error('❌ Booking error:', err);
+    console.error('❌ Booking error:', err.message);
   }
 };
 
