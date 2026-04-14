@@ -5,7 +5,7 @@ import { loadStripe } from '@stripe/stripe-js';
 let stripePromise;
 const getStripe = () => {
   if (!stripePromise) {
-    stripePromise = loadStripe('pk_test_51TJDBxDAHdlz4p9tKxn6P5c0L6vtk2PbwDLtgQp9AeQnBnbJVH2jdVxGjoyzrwQKC7rOTIyhjmPhanrkyQLGfnnf00LPdLavj0');
+    stripePromise = loadStripe(' ');
   }
   return stripePromise;
 };

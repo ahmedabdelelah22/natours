@@ -59,6 +59,23 @@ const createBooking = catchAsync(async (session) => {
   await Booking.create({ tour, user, price });
 });
 
+// bookingController.js
+exports.getMyTours = catchAsync(async (req, res, next) => {
+  // 1) find all bookings for current user
+  const bookings = await Booking.find({ user: req.user.id });
+
+  // 2) get tour ids
+  const tourIds = bookings.map(b => b.tour);
+
+  // 3) find tours with those ids
+  const tours = await Tour.find({ _id: { $in: tourIds } });
+
+  res.status(200).json({
+    status: 'success',
+    data: { bookings, tours }
+  });
+});
+
 exports.webhookCheckout = (req, res, next) => {
   const signature = req.headers['stripe-signature'];
   let event;
