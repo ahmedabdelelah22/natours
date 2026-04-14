@@ -50,19 +50,12 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
-// 4) Create booking after successful payment (via webhook or success_url)
-const createBooking = catchAsync(async (session) => {
-  const tour = session.client_reference_id;
-  const user = (await User.findOne({ email: session.customer_email })).id;
-  const price = session.amount_total / 100;
 
-  await Booking.create({ tour, user, price });
-});
 
 // bookingController.js
 exports.getMyTours = catchAsync(async (req, res, next) => {
   // 1) find all bookings for current user
-  const bookings = await Booking.find({ user: req.user.id });
+  const bookings = await Booking.find({ user: req.user.id }).populate('tour');;
 
   // 2) get tour ids
   const tourIds = bookings.map(b => b.tour);
@@ -72,11 +65,31 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    data: { bookings, tours }
+    data: {  tours }
   });
 });
 
-exports.webhookCheckout = (req, res, next) => {
+/* =========================================
+   CREATE BOOKING FROM STRIPE WEBHOOK
+========================================= */
+
+const createBooking = async (session) => {
+  try {
+    console.log('💾 Creating booking...');
+
+    await Booking.create({
+      tour: session.client_reference_id,
+      user: session.metadata.userId,
+      price: session.amount_total / 100,
+    });
+
+    console.log('✅ Booking saved');
+  } catch (err) {
+    console.error('❌ Booking error:', err);
+  }
+};
+
+exports.webhookCheckout = async (req, res) => {
   const signature = req.headers['stripe-signature'];
   let event;
 
@@ -86,12 +99,17 @@ exports.webhookCheckout = (req, res, next) => {
       signature,
       process.env.STRIPE_WEBHOOK_SECRET
     );
+
+    console.log('🔥 Webhook received:', event.type);
   } catch (err) {
-    return res.status(400).send(`Webhook error: ${err.message}`);
+    console.error('❌ Webhook error:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  if (event.type === 'checkout.session.completed')
-    createBooking(event.data.object);
+  // ONLY handle successful payment
+  if (event.type === 'checkout.session.completed') {
+    await createBooking(event.data.object);
+  }
 
   res.status(200).json({ received: true });
 };
