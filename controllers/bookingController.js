@@ -25,6 +25,10 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
 
+  // 🔥 THIS LINE FIXES EVERYTHING
+  metadata: {
+    userId: req.user.id,
+  },
     line_items: [
       {
         price_data: {
