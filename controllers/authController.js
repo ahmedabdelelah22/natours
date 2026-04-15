@@ -30,7 +30,7 @@ const createSendToken = (user, statusCode, res) => {
     httpOnly: true,
     secure: false,
     //isProduction,
-    sameSite: none,
+    sameSite: 'none',
     //isProduction ? 'none' : 'lax',
 
     // ✅ IMPORTANT FIX
@@ -100,7 +100,7 @@ exports.logout =catchAsync(async (req, res, next) => {
     res.cookie('jwt', '', {
       httpOnly: true,
       expires: new Date(Date.now()),
-      sameSite: none,
+      sameSite: 'none',
       //isProduction ? 'none' : 'lax', // ← must match login cookie,
        secure: false
        //isProduction,
