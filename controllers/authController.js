@@ -28,8 +28,10 @@ const createSendToken = (user, statusCode, res) => {
 
   res.cookie('jwt', token, {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
+    secure: false,
+    //isProduction,
+    sameSite: none,
+    //isProduction ? 'none' : 'lax',
 
     // ✅ IMPORTANT FIX
     maxAge: Number(process.env.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000,
@@ -98,8 +100,10 @@ exports.logout =catchAsync(async (req, res, next) => {
     res.cookie('jwt', '', {
       httpOnly: true,
       expires: new Date(Date.now()),
-      sameSite: isProduction ? 'none' : 'lax', // ← must match login cookie,
-       secure: isProduction,
+      sameSite: none,
+      //isProduction ? 'none' : 'lax', // ← must match login cookie,
+       secure: false
+       //isProduction,
     });
 
     // send response once
