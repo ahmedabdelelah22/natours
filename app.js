@@ -25,6 +25,7 @@ const viewRoutes = require('./routes/viewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
 
 const app = express();
+app.set('trust proxy', 1);
 
 /* ================================
    VIEW ENGINE
