@@ -60,8 +60,14 @@ exports.signup = catchAsync(async (req, res, next) => {
       ? new Date(passwordChangedAt)
       : undefined,
   });
-  const url = `${req.protocol}://${req.get('host')}/account`;
-  await new Email(newUser,url).sendWelcome();
+   // 2️⃣ Send welcome email — don't crash if it fails
+  try {
+    const url = `${req.protocol}://${req.get('host')}/account`;
+    await new Email(newUser, url).sendWelcome();
+    console.log('✅ Welcome email sent to:', newUser.email);
+  } catch (err) {
+    console.log('❌ Email failed:', err.message); // log but continue
+  }
   // 🔐 What jwt.sign() Doesid
   // jwt.sign() creates a JSON Web Token using the jsonwebtoken library.
   // It takes 3 main arguments:
