@@ -92,6 +92,13 @@ app.options('*', cors()); // 🔥 REQUIRED
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// ✅ Add this line right after
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+});
+
 // Logging (dev only)
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
