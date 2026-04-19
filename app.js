@@ -71,6 +71,7 @@ app.use(
 ================================ */
 const allowedOrigins = [
   'http://localhost:3000',
+  'http://localhost:5173',
   'https://natours-next-iota.vercel.app',
   'https://natours-production-b3f7.up.railway.app'
 ];
