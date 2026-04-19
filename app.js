@@ -42,6 +42,7 @@ mongoose.set('strictQuery', true);
 ================================ */
 app.use(
   helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' }, // ✅ add this line
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
@@ -93,11 +94,7 @@ app.options('*', cors()); // 🔥 REQUIRED
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-// ✅ Add this line right after
-app.use((req, res, next) => {
-  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-  next();
-});
+
 
 // Logging (dev only)
 if (process.env.NODE_ENV === 'development') {
