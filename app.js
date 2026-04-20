@@ -79,6 +79,7 @@ app.use(
       'http://localhost:3000',
       'https://natours-next-iota.vercel.app',
       'https://natours-production-b3f7.up.railway.app',
+     ' https://supercolossal-shani-indebtedly.ngrok-free.dev'
     ],
     credentials: true,
   })
