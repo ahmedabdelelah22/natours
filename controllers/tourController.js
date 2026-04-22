@@ -54,6 +54,8 @@ if (!req.files || (!req.files.imageCover && !req.files.images)) return next();
 // Processing multiple images is async — this ensures:
 // All images are processed
 // You wait before calling next()
+if (req.files?.images) {
+
   await Promise.all(
     req.files.images.map(async (file, i) => {
       const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
@@ -67,7 +69,7 @@ if (!req.files || (!req.files.imageCover && !req.files.images)) return next();
       req.body.images.push(filename);
     })
   );
-
+}
   next();
 });
 exports.aliasTopTours = (req, res, next) => {
