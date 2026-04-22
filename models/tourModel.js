@@ -124,6 +124,7 @@ tourSchema.index({ ratingsAverage: -1 });
 tourSchema.index({ createdAt: -1 });
 // ADD GEOSPATIAL INDEXES:
  tourSchema.index({ startLocation: '2dsphere' });
+ 
 // tourSchema.index({ 'locations.coordinates': '2dsphere' });
 // COMPOUND INDEXES FOR COMMON QUERIES:
 tourSchema.index({ price: 1, ratingsAverage: -1 });
