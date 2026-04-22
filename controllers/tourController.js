@@ -36,6 +36,9 @@ exports.uploadTourImages = upload.fields([
 ]); // 'photo' must match input name in form
 
 exports.resizeTourImages = catchAsync(async (req, res, next) => {
+  // use a timestamp as fallback for new tours
+const tourId = req.params.id || Date.now();
+
   if (!req.files) return next();
 
   // 1) Cover image — only if provided
