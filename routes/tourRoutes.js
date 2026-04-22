@@ -41,6 +41,7 @@ router
     authController.restrictTo('admin', 'lead-guide'),
     tourController.uploadTourImages,
     tourController.resizeTourImages,
+    tourController.parseFormData, // ✅ add this
     tourController.createTour,
   );
 router
@@ -51,6 +52,7 @@ router
     authController.restrictTo('admin', 'lead-guide'),
     tourController.uploadTourImages,
     tourController.resizeTourImages,
+    tourController.parseFormData, // ✅ add this
     tourController.updateTour,
   )
   .delete(

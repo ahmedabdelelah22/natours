@@ -36,42 +36,46 @@ exports.uploadTourImages = upload.fields([
 ]); // 'photo' must match input name in form
 
 exports.resizeTourImages = catchAsync(async (req, res, next) => {
+  if (!req.files) return next();
 
-if (!req.files || (!req.files.imageCover && !req.files.images)) return next();
-  // 1) Cover image
-  req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+  // 1) Cover image — only if provided
+  if (req.files.imageCover) {
+    req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+    await sharp(req.files.imageCover[0].buffer)
+      .resize(2000, 1333)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toFile(`public/img/tours/${req.body.imageCover}`);
+  }
 
-  await sharp(req.files.imageCover[0].buffer)
-    .resize(2000, 1333)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(`public/img/tours/${req.body.imageCover}`);
+  // 2) Images — only if provided
+  if (req.files.images) {
+    req.body.images = [];
+    await Promise.all(
+      req.files.images.map(async (file, i) => {
+        const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+        await sharp(file.buffer)
+          .resize(2000, 1333)
+          .toFormat('jpeg')
+          .jpeg({ quality: 90 })
+          .toFile(`public/img/tours/${filename}`);
+        req.body.images.push(filename);
+      })
+    );
+  }
 
-  // 2) Images
-  req.body.images = [];
-
-//   ✅ Why Promise.all
-// Processing multiple images is async — this ensures:
-// All images are processed
-// You wait before calling next()
-if (req.files?.images) {
-
-  await Promise.all(
-    req.files.images.map(async (file, i) => {
-      const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
-
-      await sharp(file.buffer)
-        .resize(2000, 1333)
-        .toFormat('jpeg')
-        .jpeg({ quality: 90 })
-        .toFile(`public/img/tours/${filename}`);
-
-      req.body.images.push(filename);
-    })
-  );
-}
   next();
 });
+
+exports.parseFormData = (req, res, next) => {
+  if (req.body.startLocation && typeof req.body.startLocation === 'string') {
+    req.body.startLocation = JSON.parse(req.body.startLocation);
+  }
+  if (req.body.locations && typeof req.body.locations === 'string') {
+    req.body.locations = JSON.parse(req.body.locations);
+  }
+  next();
+};
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
   req.query.sort = '-ratingsAverage,price';
