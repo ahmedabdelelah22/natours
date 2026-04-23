@@ -13,9 +13,15 @@ exports.getAll = Model => {
     
     await features.pagination();
     const docs = await features.query;
+
+     // 🔥 COUNT TOTAL MATCHING DOCUMENTS
+  const totalResults = await Model.countDocuments(
+    features.query.getQuery()
+  );
     
     res.status(200).json({
       status: 'success',
+      totalResults, 
       results: docs.length,
       data:  docs 
     });
