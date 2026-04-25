@@ -231,7 +231,10 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   
   try {
     // 3️⃣ Create reset URL
-    const resetUrl = `${req.protocol}://${req.get('host')}/api/users/resetPassword/${resetToken}`;
+    //const resetUrl = `${req.protocol}://${req.get('host')}/api/users/resetPassword/${resetToken}`;
+    const resetUrl = process.env.NODE_ENV === 'production'
+  ? `https://your-vercel-app.vercel.app/reset-password/${resetToken}`
+  : `http://localhost:5173/reset-password/${resetToken}`;
        console.log('4️⃣ Reset URL:', resetUrl);
     // 5️⃣ Send email
     await new Email(user, resetUrl).sendPasswordReset();
