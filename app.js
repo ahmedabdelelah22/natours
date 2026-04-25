@@ -61,6 +61,7 @@ app.use(
           "https://cdn.jsdelivr.net",
           "https://api.stripe.com",
           "ws://localhost:*",
+          "https://natours-production-b3f7.up.railway.app", // ✅ fix this
           "https://your-railway-app.up.railway.app",
 
         ],
