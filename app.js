@@ -25,7 +25,7 @@ const viewRoutes = require('./routes/viewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
 
 const app = express();
-
+app.set('trust proxy', 1);
 /* ================================
    VIEW ENGINE
 ================================ */
@@ -62,8 +62,6 @@ app.use(
           "https://api.stripe.com",
           "ws://localhost:*",
           "https://natours-production-b3f7.up.railway.app", // ✅ fix this
-          "https://your-railway-app.up.railway.app",
-
         ],
       },
     },
@@ -73,21 +71,18 @@ app.use(
 /* ================================
    CORS CONFIG
 ================================ */
-app.use(
-  cors({
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:3000',
-      'https://natours-next-iota.vercel.app',
-      'https://natours-production-b3f7.up.railway.app',
-      'https://supercolossal-shani-indebtedly.ngrok-free.dev'
-    ],
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://natours-next-iota.vercel.app',
+    'https://natours-production-b3f7.up.railway.app',
+  ],
+  credentials: true,
+};
 
-app.options('*', cors()); // 🔥 REQUIRED
-
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // ✅ same options
 /* ================================
    GLOBAL MIDDLEWARES
 ================================ */
