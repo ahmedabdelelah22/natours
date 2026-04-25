@@ -62,6 +62,7 @@ app.use(
           "https://api.stripe.com",
           "ws://localhost:*",
           "https://natours-production-b3f7.up.railway.app", // ✅ fix this
+          "https://natours-react-psi.vercel.app"
         ],
       },
     },
@@ -77,6 +78,7 @@ const corsOptions = {
     'http://localhost:3000',
     'https://natours-next-iota.vercel.app',
     'https://natours-production-b3f7.up.railway.app',
+    'https://natours-react-psi.vercel.app'
   ],
   credentials: true,
 };
