@@ -9,7 +9,7 @@ process.on('uncaughtException',err => {
 
 if (process.env.NODE_ENV !== 'production') {
   const dotenv = require('dotenv');
-  dotenv.config({ path: './config.env' });
+dotenv.config({ path: './config.env', quiet: true });
 }
 
 const app = require('./app');
