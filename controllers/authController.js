@@ -239,6 +239,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     });
 
   } catch (err) {
+      console.log('EMAIL ERROR:', err); // ✅ add this
+
     // 7️⃣ If email fails, reset token and expire
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
