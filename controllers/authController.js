@@ -212,26 +212,30 @@ exports.restrictTo = (...roles) => {
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
+  console.log('1️⃣ Looking for user:', email);
 
   // 1️⃣ Check if user exists
   const user = await User.findOne({ email });
   if (!user) {
     return next(new AppError('There is no user with that email address', 404));
   }
+  console.log('2️⃣ User found:', user.email);
 
   // 2️⃣ Generate password reset token
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false }); 
 
-  
+    console.log('3️⃣ Token created');
+
   
   
   try {
     // 3️⃣ Create reset URL
     const resetUrl = `${req.protocol}://${req.get('host')}/api/users/resetPassword/${resetToken}`;
+       console.log('4️⃣ Reset URL:', resetUrl);
     // 5️⃣ Send email
     await new Email(user, resetUrl).sendPasswordReset();
-
+ console.log('5️⃣ Email sent!');
     // 6️⃣ Respond to client
     res.status(200).json({
       status: 'success',
